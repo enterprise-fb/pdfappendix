@@ -68,4 +68,4 @@ os.remove(tmppath+"tmp__.pdf")
 os.remove(tmppath+"tmp__.png")
 os.remove(tmppath+"tmp__.html")
 
-## clean up temporary filoes
+## clean up temporary files
