@@ -1,0 +1,72 @@
+#!/usr/bin/env python3
+import sys
+import pdf2image ## tredjepartsmodul https://pypi.org/project/pdf2image/
+import os.path
+import tempfile ## modul för att skapa temporära filer
+import shutil ## modul för att bl.a. flytta filer
+import subprocess
+
+tmppath=tempfile.gettempdir()+"/" ## hämta mapp för temporära filer från OS
+cwd = os.getcwd()+"/" ## hämta aktuell mapp
+
+arg=sys.argv ## hämta parametrar från command line
+argl=len(arg) ## läs antal parametrar
+
+if(argl<3): ## måste vara minst två parametrar
+    print("Syntax: pdfappendix <pdffile> <text to print on first page>")
+    sys,exit(1) ## exit-kod 1 pga fel antal parametrar
+
+pdfn=arg[1] ## läs första parametern, PDF-filens namn
+text=arg[2] ## läs andra parametern, texten som ska läggas till
+
+if not(os.path.isfile(pdfn)): ## kolla om input-filen existerar
+    print("File "+pdfn+" not found")
+    sys.exit(1) ## exit-kod 1 pga icke-existerande fil
+
+filename, file_extension = os.path.splitext(pdfn) # hämta filmamn och filtyp
+
+if (file_extension.lower()!=".pdf"): # felmeddelande om ej PDF-fil
+    print("File must be of .pdf type, which "+pdfn+" is not, but "+file_extension.lower()+".")
+    sys.exit(1) ## exit-kod 1 pga fel fil-ändelse
+
+htmls="<html><head></head><body><h3 align='right'>{}</h3></body></html>".format(text)
+
+tfl=open(tmppath+"tmp__.html","w+") # skapa enkel HTML-fil med text som ska läggas till
+n=tfl.write(htmls)
+tfl.close()
+
+
+subprocess.Popen("htmldoc --webpage --footer ...  -f "+tmppath+"tmp__.pdf "+tmppath+"tmp__.html > /dev/null 2>&1", shell=True).wait()
+
+## htmldoc skapar en temporär PDF-fil av HTML-filen som alltså innehåller texten som ska läggas till
+
+img = pdf2image.convert_from_path(tmppath+"tmp__.pdf",fmt="png",transparent=True)
+
+## pdf2image konverterar den temporära PDF-filen till en genomskinlig PNG-bild
+
+print (tmppath+"tmp__.png")
+img[0].save(tmppath+"tmp__.png","PNG")
+
+shellstr="pdfstamp \""+pdfn+ "\" -i "+tmppath+"tmp__.png -l 160,290"
+
+subprocess.Popen(shellstr, shell=True).wait()
+
+## pdfstamp stämplar på PNG-bilden på första sidan på den PDF-fil som ska bearbetas
+## obs! pdfstamp måste installeras samt Java vara installerat
+## https://github.com/CrossRef/pdfstamp
+## Måste även finnas en shell wrapper som ligger i PATH med följande två rader;
+## #!/usr/bin/env bash
+## java -jar {SÄTT IN PATH HÄR}pdfstamp.jar $@
+##
+## koordinaterna för den ditstämplade texten anges sist (160,290) - övre högra hörnet
+## To do: lägg till funktionalitet för att kunna ange koordinater direkt i command line
+
+shutil.move(cwd+filename+"_stamped.pdf",cwd+filename+"_.pdf")
+## spara output-filen som ursprunligt filnamn med tillägg för _
+## To do: lägg till funktionalitet för att ange output-filnamn direkt i command line
+
+os.remove(tmppath+"tmp__.pdf")
+os.remove(tmppath+"tmp__.png")
+os.remove(tmppath+"tmp__.html")
+
+## rensa upp temporära filer
