@@ -7,7 +7,7 @@ import tempfile ## module to create temporary files
 import shutil ## module to move files etc
 import subprocess ## module to run shell commands
 
-# set up argument parser
+# set up argument parser, pretty self explanatory
 parser = argparse.ArgumentParser(description='Tool to stamp text on PDF files from command line') ## add argument parser object to handle command line arguments
 parser.add_argument("inputfile", help="The name of the PDF file which is to be stamped with text (must be a PDF)")
 parser.add_argument("text", help="Text to stamp on the PDF file (use quotes if text contains whitespace)")
@@ -38,7 +38,7 @@ pnum=args.page-1 ## get page number to stamp (reduce with one since zero indexin
 ## todo: add functionality to check maximum number of pages and exit if stated page number exceeds this
 
 text=args.text.encode('ßascii', 'xmlcharrefreplace').decode("utf-8")
-## read second positional argument, text to add (convert special chars to HTML entities and back to UTF-8)
+## read second positional argument, text to add (convert special chars to HTML entities and then back to UTF-8)
 
 hsize=str(args.size) ## get size argument (from 1-6, where 1 is biggest and 6 is smallest and 4 is default)
 rmarg=str(args.right) ## get right margin argument
@@ -74,7 +74,7 @@ for pageNum in range(0, pdfReader.numPages): ## iterate from start to end
     pageObj=pdfReader.getPage(pageNum) ## ...then add page from input object
   else: ## if page naumber equals page to be stamped...
     pageObj=stampPage ## ...then add stamp page
-  pdfWriter.addPage(pageObj) ## go ahed and add the page to the output object
+  pdfWriter.addPage(pageObj) ## go ahead and add the page to the output object
 
 resultPdfFile = open(outputfile, 'wb') ## open output file for writing binary
 pdfWriter.write(resultPdfFile) ## save output file
