@@ -35,7 +35,9 @@ verbose arguments:
 *pdfappednix -o output.pdf -s 6 mypdf.pdf "Smaller caption"* <-- creates a new file called output.pdf with the first paged stamped with "Smaller caption" (in smaller text)
 
 **Credits:**
+
 Code: Enterprise (A complete amateur, but pretty smart)
+
 Thanks to Dinero for PyPDF2 tips and vhe for general "housekeeping" tips.
 
 *This project was made possible with the help of https://www.flashback.org*
