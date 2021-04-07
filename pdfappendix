@@ -31,7 +31,6 @@ if args.output:
     outputfile=args.output ## if output file name has been stated by user use this
 
 pnum=args.page-1 ## get page number to stamp (reduce with one since zero indexing)
-print("Processing "+str(pnum))
 
 ## todo: add functionality to check maximum number of pages and exit if stated page number exceeds this
 
