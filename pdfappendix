@@ -7,8 +7,7 @@ import tempfile ## module to create temporary files
 import shutil ## module to move files etc
 import subprocess
 
-
-
+## set upp argument parser with two required arguments and three optional arguments
 parser = argparse.ArgumentParser(description='Tool to stamp text on PDF files from command line') ## add argument parser object to handle command line arguments
 parser.add_argument("inputfile", help="The name of the PDF file which is to be stamped with text (must be a PDF)")
 parser.add_argument("text", help="Text to stamp on the PDF file (use quotes if text contains whitespace)")
