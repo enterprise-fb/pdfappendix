@@ -1,5 +1,5 @@
 # pdfappendix
-A command line tool to append existing PDF file with a caption (for instance Appendix 1)
+A command line tool to "stamping" am existing PDF file with a text caption (for instance *Appendix 1*)
 
 This version is intended for MacOS. A Linux version may follow, if God is willing.
 
@@ -11,7 +11,20 @@ This version is intended for MacOS. A Linux version may follow, if God is willin
 
 **Usage syntax:**
 
-pdfapp4a [-h] [-o OUTPUT] [-p PAGE] [-s {1,2,3,4,5,6}] inputfile text
+pdfappendix [-h] [-o OUTPUT] [-p PAGE] [-s {1,2,3,4,5,6}] inputfile text
+
+inputfile = input file name (must be PDF)
+text = text to stamp on to PDF (must be in quotes if it contains whitespace)
+
+verbose arguments:
+
+-h == --help ==> show help
+
+-o == --output ==> set output file name (default: inputfile+_)
+
+-p == --page ==> set page number (in input file) to place stamp on (default: 1)
+
+-s == --size ==> set caption size (1 is biggest and 6 is smallest, c.f. <h1> to <h6> in HTML) 
 
 **Example usage:**
 
