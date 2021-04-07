@@ -1,7 +1,7 @@
 # pdfappendix
 A command line tool to "stamp" an existing PDF file with a user defined text caption (for instance *Appendix 1*)
 
-This version is intended for MacOS. A Linux version may follow, if God is willing.
+This version is intended for MacOS. A Linux version may follow, if God is willing. A Windows version may follow if hell freezes over.
 
 **Prerequisites:**
 * **Python3**  must be installed (standard on MacOs)
