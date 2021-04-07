@@ -24,7 +24,7 @@ verbose arguments:
 
 -p == --page ==> set page number (in input file) to place stamp on (default: 1)
 
--s == --size ==> set caption size (1 is biggest and 6 is smallest, c.f. < h 1 > to < h 6 > in HTML) 
+-s == --size ==> set caption size (1 is biggest and 6 is smallest, c.f. < h 1 > to < h 6 > in HTML; default: 4)
 
 **Example usage:**
 
