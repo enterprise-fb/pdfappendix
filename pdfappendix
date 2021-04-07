@@ -7,13 +7,16 @@ import tempfile ## module to create temporary files
 import shutil ## module to move files etc
 import subprocess
 
-## set upp argument parser with two required arguments and three optional arguments
+
+
 parser = argparse.ArgumentParser(description='Tool to stamp text on PDF files from command line') ## add argument parser object to handle command line arguments
 parser.add_argument("inputfile", help="The name of the PDF file which is to be stamped with text (must be a PDF)")
 parser.add_argument("text", help="Text to stamp on the PDF file (use quotes if text contains whitespace)")
 parser.add_argument("-o", "--output", help="Output file name - default: inputfilename+_")
 parser.add_argument("-p", "--page",type=int,default=1, help="Page number to stamp text on - default: 1")
 parser.add_argument("-s","--size",type=int,choices=range(1, 7),default=4, help="Text size 1-6, 1 is largest, default:4")
+parser.add_argument("-r","--right",type=int,default=5,help="Right hand side margin, can also be negative, default:5")
+parser.add_argument("-t","--top",type=int,default=0,help="Top margin, can also be negative, default:0")
 
 args = parser.parse_args()
 
@@ -32,12 +35,15 @@ if args.output:
 
 pnum=args.page-1 ## get page number to stamp (reduce with one since zero indexing)
 
+
 ## todo: add functionality to check maximum number of pages and exit if stated page number exceeds this
 
 text=args.text.encode('ßascii', 'xmlcharrefreplace').decode("utf-8")
 ## read second positional argument, text to add (convert special chars to HTML entities and back to UTF-8)
 
 hsize=str(args.size) ## get size argument (from 1-6, where 1 is biggest and 6 is smallest and 4 is default)
+rmarg=str(args.right) ## get right margin argument
+tmarg=str(args.top) ## get top margin argument
 
 if not(os.path.isfile(pdfn)): ## check if input file exists
     print("File "+pdfn+" not found")
@@ -54,7 +60,7 @@ tfl=open(tmppath+"tmp__.html","w+") # create a simple HTML file with the text do
 n=tfl.write(htmls) ## write HTML to file
 tfl.close() ## close HTML file
 
-subprocess.Popen("htmldoc --webpage --footer ...  -f "+tmppath+"tmp__.pdf "+tmppath+"tmp__.html > /dev/null 2>&1", shell=True).wait()
+subprocess.Popen("htmldoc --webpage --top "+tmarg+" --right "+rmarg+" --header ... --footer ...  -f "+tmppath+"tmp__.pdf "+tmppath+"tmp__.html > /dev/null 2>&1", shell=True).wait()
 ## htmldoc creates a temporary PDF file from the HTML file, which contains the text to be added to the original PDF
 
 pdfFile = open(pdfn, 'rb') ## open input file for reading binary
