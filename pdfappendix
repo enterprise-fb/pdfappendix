@@ -69,12 +69,12 @@ stampReader = PyPDF2.PdfFileReader(open(tmppath+"tmp__.pdf" , 'rb')) ## open sta
 stampPage.mergePage(stampReader.getPage(0)) ## merge first page of stamp with Nth page from input PDF
 pdfWriter = PyPDF2.PdfFileWriter() ## create an output object
 
-for pageNum in range(0, pdfReader.numPages): ## iterate from statt to end
-  if pageNum!=pnum: ## if page number is not the page to be stamped
-    pageObj=pdfReader.getPage(pageNum) ## add page from input object
-  else: ## if page naumber equals page to be stamped
-    pageObj=stampPage ## add stamp page
-  pdfWriter.addPage(pageObj) ## add page to output object
+for pageNum in range(0, pdfReader.numPages): ## iterate from start to end
+  if pageNum!=pnum: ## if page number is not the page to be stamped...
+    pageObj=pdfReader.getPage(pageNum) ## ...then add page from input object
+  else: ## if page naumber equals page to be stamped...
+    pageObj=stampPage ## ...then add stamp page
+  pdfWriter.addPage(pageObj) ## go ahed and add the page to the output object
 
 resultPdfFile = open(outputfile, 'wb') ## open output file for writing binary
 pdfWriter.write(resultPdfFile) ## save output file
