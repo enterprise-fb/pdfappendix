@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
-import argparse
-import sys
-import PyPDF2
+import argparse ## module to parse CLI arguments
+import sys ## module including kosher Exit
+import PyPDF2 ## third party module, please see readme file
 import os.path
 import tempfile ## module to create temporary files
 import shutil ## module to move files etc
-import subprocess
+import subprocess ## module to run shell commands
 
 # set up argument parser
 parser = argparse.ArgumentParser(description='Tool to stamp text on PDF files from command line') ## add argument parser object to handle command line arguments
