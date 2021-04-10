@@ -5,7 +5,7 @@ This version is intended for MacOS. A Linux version may follow, if God is willin
 
 **Prerequisites:**
 * **Python3**  must be installed (standard on MacOs)
-* **PyFPDF 1.7** (https://pyfpdf.readthedocs.io/en/latest/) must be installed with pip/pip3 (*pip install fpdf==1.7*) 
+* **PyFPDF** (https://pyfpdf.readthedocs.io/en/latest/) must be installed with pip/pip3 (*pip install fpdf*) 
 * **PyPDF2** (https://pythonhosted.org/PyPDF2/#) must be installed with pip/pip3 (*pip install PyPDF2*) 
 * **pdfappendix** must be given executable permission (*sudo chmod +x pdfappendix*)
 
