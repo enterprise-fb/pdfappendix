@@ -1,21 +1,22 @@
 #!/usr/bin/env python3
-import argparse ## module to parse CLI arguments
-import sys ## module including kosher Exit
-import PyPDF2 ## third party module, please see readme file
+import argparse
+import sys
+from fpdf import FPDF
+import PyPDF2
 import os.path
 import tempfile ## module to create temporary files
 import shutil ## module to move files etc
-import subprocess ## module to run shell commands
+import subprocess
 
-# set up argument parser, pretty self explanatory
+
 parser = argparse.ArgumentParser(description='Tool to stamp text on PDF files from command line') ## add argument parser object to handle command line arguments
 parser.add_argument("inputfile", help="The name of the PDF file which is to be stamped with text (must be a PDF)")
 parser.add_argument("text", help="Text to stamp on the PDF file (use quotes if text contains whitespace)")
 parser.add_argument("-o", "--output", help="Output file name - default: inputfilename+_")
 parser.add_argument("-p", "--page",type=int,default=1, help="Page number to stamp text on - default: 1")
 parser.add_argument("-s","--size",type=int,choices=range(1, 7),default=4, help="Text size 1-6, 1 is largest, default:4")
-parser.add_argument("-r","--right",type=int,default=5,help="Right hand side margin, can also be negative, default:5")
-parser.add_argument("-t","--top",type=int,default=0,help="Top margin, can also be negative, default:0")
+parser.add_argument("-r","--right",type=int,default=5,help="Right hand side margin, may also be negative, default:5")
+parser.add_argument("-t","--top",type=int,default=0,help="Top margin, may also be negative, default:0")
 
 args = parser.parse_args()
 
@@ -38,7 +39,7 @@ pnum=args.page-1 ## get page number to stamp (reduce with one since zero indexin
 ## todo: add functionality to check maximum number of pages and exit if stated page number exceeds this
 
 text=args.text.encode('ßascii', 'xmlcharrefreplace').decode("utf-8")
-## read second positional argument, text to add (convert special chars to HTML entities and then back to UTF-8)
+## read second positional argument, text to add (convert special chars to HTML entities and back to UTF-8)
 
 hsize=str(args.size) ## get size argument (from 1-6, where 1 is biggest and 6 is smallest and 4 is default)
 rmarg=str(args.right) ## get right margin argument
@@ -52,15 +53,26 @@ if (file_extension.lower()!=".pdf"): # error message if not PDF extension
     print("File must be of .pdf type, which "+pdfn+" is not, but "+file_extension.lower()+".")
     sys.exit(1) ## exit code 1, if wrong extension
 
-htmls="<html><head><meta charset='UTF-8'></head><body><h"+hsize+" align='right'>"+text+"</h"+hsize+"></body></html>"
+#htmls="<html><head><meta charset='UTF-8'></head><body><h"+hsize+" align='right'>"+text+"</h"+hsize+"></body></html>"
 ## set upp HTML code for stamp
 
-tfl=open(tmppath+"tmp__.html","w+") # create a simple HTML file with the text do add
-n=tfl.write(htmls) ## write HTML to file
-tfl.close() ## close HTML file
+#tfl=open(tmppath+"tmp__.html","w+") # create a simple HTML file with the text do add
+#n=tfl.write(htmls) ## write HTML to file
+#tfl.close() ## close HTML file
 
-subprocess.Popen("htmldoc --webpage --top "+tmarg+" --right "+rmarg+" --header ... --footer ...  -f "+tmppath+"tmp__.pdf "+tmppath+"tmp__.html > /dev/null 2>&1", shell=True).wait()
+#subprocess.Popen("htmldoc --webpage --top "+tmarg+" --right "+rmarg+" --header ... --footer ...  -f "+tmppath+"tmp__.pdf "+tmppath+"tmp__.html > /dev/null 2>&1", shell=True).wait()
 ## htmldoc creates a temporary PDF file from the HTML file, which contains the text to be added to the original PDF
+
+pdf = FPDF('P','pt','A4') # create a FPDF object from scratch in portait mode, A4 and point measures
+# todo: enable landscape moode and other document sizes than A4
+
+
+pdf.add_page()
+pdf.set_font('Arial', 'B', 12)
+pdf.cell(10,args.top,'',0,1) # add top margin
+#pdf.cell(800-args.right, 25, text,0,0,'R') # add text to blank PDF page - right aligned
+pdf.cell(555-args.right, 10, text,0,0,'R') # add text to blank PDF page - right aligned
+pdf.output(tmppath+"tmp__.pdf")
 
 pdfFile = open(pdfn, 'rb') ## open input file for reading binary
 pdfReader = PyPDF2.PdfFileReader(pdfFile) ## create pdfreader from input file
@@ -69,18 +81,19 @@ stampReader = PyPDF2.PdfFileReader(open(tmppath+"tmp__.pdf" , 'rb')) ## open sta
 stampPage.mergePage(stampReader.getPage(0)) ## merge first page of stamp with Nth page from input PDF
 pdfWriter = PyPDF2.PdfFileWriter() ## create an output object
 
-for pageNum in range(0, pdfReader.numPages): ## iterate from start to end
-  if pageNum!=pnum: ## if page number is not the page to be stamped...
-    pageObj=pdfReader.getPage(pageNum) ## ...then add page from input object
-  else: ## if page naumber equals page to be stamped...
-    pageObj=stampPage ## ...then add stamp page
-  pdfWriter.addPage(pageObj) ## go ahead and add the page to the output object
+for pageNum in range(0, pdfReader.numPages): ## iterate from statt to end
+  if pageNum!=pnum: ## if page number is not the page to be stamped
+    pageObj=pdfReader.getPage(pageNum) ## add page from input object
+  else: ## if page naumber equals page to be stamped
+    pageObj=stampPage ## add stamp page
+  pdfWriter.addPage(pageObj) ## add page to output object
 
 resultPdfFile = open(outputfile, 'wb') ## open output file for writing binary
 pdfWriter.write(resultPdfFile) ## save output file
 pdfFile.close() ## close input file
 resultPdfFile.close() ## close output file
 
-os.remove(tmppath+"tmp__.pdf")
-os.remove(tmppath+"tmp__.html")
+#os.remove(tmppath+"tmp__.pdf")
+print("open "+tmppath+"tmp__.pdf")
+#os.remove(tmppath+"tmp__.html")
 ## clean up temporary files
