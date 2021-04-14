@@ -36,7 +36,7 @@ verbose arguments:
 
 **Credits:**
 
-Code: Enterprise (A complete amateur, but also a dazzling rascal)
+Code: Enterprise
 
 Thanks to Dinero for PyPDF2 tips and vhe for general "housekeeping" tips.
 
