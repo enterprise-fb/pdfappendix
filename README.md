@@ -32,7 +32,7 @@ verbose arguments:
 
 *pdfappendix -p 3 mypdf.pdf "Third page here"* <-- creates a new file called mypdf_.pdf with the third page stamped with "Third page here"
 
-*pdfappednix -o output.pdf -s 6 mypdf.pdf "Smaller caption"* <-- creates a new file called output.pdf with the first paged stamped with "Smaller caption" (in smaller text)
+*pdfappendix -o output.pdf -s 6 mypdf.pdf "Smaller caption"* <-- creates a new file called output.pdf with the first paged stamped with "Smaller caption" (in smaller text)
 
 **Credits:**
 
