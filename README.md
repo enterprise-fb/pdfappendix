@@ -1,12 +1,12 @@
 # pdfappendix
 A command line tool to "stamp" an existing PDF file with a user defined text caption (for instance *Appendix 1*)
 
-This version is intended for MacOS. A Linux version may follow, if God is willing. A Windows version may follow if hell freezes over.
+This version is intended for MacOS and Linux.  It also works on WSL2 on Windows.
 
 **Prerequisites:**
 * **Python3**  must be installed (standard on MacOs)
-* **PyFPDF** (https://pyfpdf.readthedocs.io/en/latest/) must be installed with pip/pip3 (*pip install fpdf*) 
-* **PyPDF2** (https://pythonhosted.org/PyPDF2/#) must be installed with pip/pip3 (*pip install PyPDF2*) 
+* **PyFPDF** (https://pyfpdf.readthedocs.io/en/latest/) must be installed with pip/pip3 (*pip3 install fpdf*) 
+* **PyPDF2** (https://pythonhosted.org/PyPDF2/#) must be installed with pip/pip3 (*pip3 install PyPDF2*) 
 * **pdfappendix** must be given executable permission (*sudo chmod +x pdfappendix*)
 
 **Usage syntax:**
@@ -33,6 +33,13 @@ verbose arguments:
 *pdfappendix -p 3 mypdf.pdf "Third page here"* <-- creates a new file called mypdf_.pdf with the third page stamped with "Third page here"
 
 *pdfappendix -o output.pdf -s 6 mypdf.pdf "Smaller caption"* <-- creates a new file called output.pdf with the first paged stamped with "Smaller caption" (in smaller text)
+
+**Bonus application pdfbatch**
+
+pdfbatch uses pdfappendix to automatically stamp text to a collection of PDF files, for instance appendices to an agreement.
+
+pdfbatch -h for help
+
 
 **Credits:**
 
