@@ -1,0 +1,52 @@
+#!/usr/bin/env python3
+import argparse ## argument parser module
+import os
+import re ## regular expression module
+from subprocess import Popen, PIPE
+
+## appendix regex constants
+rxs=["bilaga\s+\d+","bil\.\s+\d+","appendix\s+\d+","schedule\s+\d+","exhibit\.?\s+\d+"]
+
+parser = argparse.ArgumentParser(description='Tool to batch stamp text on PDF files from command line') ## add argument parser object to handle command line arguments
+parser.add_argument("files", nargs="+", help="The name of the PDF files which is to be stamped with text (must be PDFs)")
+parser.add_argument("-p", "--page",type=int,default=1, help="Page number to stamp text on - default: 1")
+parser.add_argument("-s","--size",type=int,choices=range(1, 7),default=4, help="Text size 1-6, 1 is largest, default:4")
+parser.add_argument("-r","--right",type=int,default=5,help="Right hand side margin, may also be negative, default:5")
+parser.add_argument("-t","--top",type=int,default=0,help="Top margin, may also be negative, default:0")
+
+args = parser.parse_args()
+
+flist = args.files ## get positional arguments = file names
+
+fll = len(flist) ## length of flist
+if fll==1:
+    singlefl=flist[0]
+    if not(os.path.isfile(singlefl)): # exit if stated file doesnt exist
+        print ("'"+singlefl+"' does not exist!")
+        exit()
+
+for fl in flist: # check that all files are of .PDF type
+    filename, file_extension = os.path.splitext(fl)
+    if file_extension.lower()!=".pdf":
+        print("'"+fl+ "' is not of .PDF file type. All files must be .PDF!")
+        exit()
+
+for fl in flist: # iterate through all files
+    filename, file_extension = os.path.splitext(fl)
+    stamp=fl ## default stamp = file name, if not patterns match
+    found=False
+    ix=0
+    while ix<len(rxs) and not(found): ## iterate through regex list, but only if not found yet
+        rx=rxs[ix]
+        m=re.search(rx,fl, re.IGNORECASE)
+        found=bool(m)
+        if found:
+            stamp=m[0]
+        ix=ix+1
+
+    p = Popen(['pdfappendix', fl, stamp, '-p' , str(args.page) , '-s', str(args.size),'-r',str(args.right),'-t',str(args.top)], stdout=PIPE, stderr=PIPE)
+    output, error = p.communicate()
+    if p.returncode != 0:
+        print("pdfappendix failure: %d %s %s" % (p.returncode, output, error))
+    else:
+        print(fl)
